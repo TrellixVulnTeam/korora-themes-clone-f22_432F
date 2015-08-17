@@ -70,6 +70,8 @@ gsettings=["gsettings set org.gnome.desktop.background show-desktop-icons false"
 "gsettings set org.gnome.nautilus.preferences always-use-location-entry true","gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close' "]
 
 
+favorite_apps=['firefox.desktop','org.gnome.Nautilus.desktop','org.gnome.Terminal.desktop','evolution.desktop', 'shotwell.desktop', 'libreoffice-writer.desktop', 'org.gnome.Screenshot.desktop', 'org.gnome.gedit.desktop','gnome-calculator.desktop',\
+"virtualbox.desktop","geany.desktop","booksorg.desktop","gnome-tweak-tool.desktop","gnome-control-center.desktop"]
 
 if not os.path.isdir(home_Downloads):
 	os.mkdir(home_Downloads)
@@ -99,14 +101,15 @@ nautilus-terminal gnome-terminal-nautilus -y",shell=True)
 
 def get_all_extensions():
 	result=[]
-	local="%s/.local/share/gnome-shell/extensions"%home
-	if os.path.isdir(local):
-		for filee in os.listdir(local):
+	if os.path.isdir("%s/.local/share/gnome-shell/extensions"%home):
+		for filee in os.listdir("%s/.local/share/gnome-shell/extensions"%home):
 			if filee not in result:
 				result.append(filee)
+
 	for filee in os.listdir("/usr/share/gnome-shell/extensions"):
 		if filee not in result:
 			result.append(filee)
+
 	if len(result)==0:
 		return None
 	else:
@@ -115,25 +118,28 @@ def get_all_extensions():
 
 def get_applications():
 	result=[]
-	local="%s/.local/share/applications"%home
-	l="/usr/local/share/applications"
-	favorite_apps=['firefox.desktop','org.gnome.Nautilus.desktop','org.gnome.Terminal.desktop','evolution.desktop', 'shotwell.desktop', 'libreoffice-writer.desktop', 'org.gnome.Screenshot.desktop', 'org.gnome.gedit.desktop','gnome-calculator.desktop']
-	if os.path.isdir(local):
-		for filee in os.listdir(local):
-			if filee not in result and filee in favorite_apps:
+	if os.path.isdir("%s/.local/share/applications"%home):
+		for filee in os.listdir("%s/.local/share/applications"%home):
+			if filee not in result :
 				result.append(filee)
-	if os.path.isdir(l):
-		for filee in os.listdir(l):
-			if filee not in result and filee in favorite_apps:
+                                
+	if os.path.isdir("/usr/local/share/applications"):
+		for filee in os.listdir("/usr/local/share/applications"):
+			if filee not in result :
 				result.append(filee)
+                                
 	for filee in os.listdir("/usr/share/applications"):
-		if filee not in result and filee in favorite_apps:
+		if filee not in result:
 			result.append(filee)
-	if len(result)==0:
+
+	for filee in favorite_apps:
+		if filee not in result:
+			favorite_apps.remove(filee)
+				
+	if len(favorite_apps)==0:
 		return None
 	else:
-		return result
-	
+		return favorite_apps
 
 def down_korora_repo():
 	os.chdir(home_Downloads)
@@ -248,9 +254,11 @@ if  os.path.isfile("/usr/share/backgrounds/korora/default/korora.xml")==False:
 
 
 old_extension=get_all_extensions()
-for i in old_extension:
-	subprocess.call("gnome-shell-extension-tool -d %s"%i,shell=True)
-	time.sleep(2)
+
+if old_extension!=None:
+	for i in old_extension:
+		subprocess.call("gnome-shell-extension-tool -d %s"%i,shell=True)
+		time.sleep(2)
 
 
 get_applications=get_applications()
