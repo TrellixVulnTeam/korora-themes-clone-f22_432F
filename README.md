@@ -16,3 +16,13 @@ http://www.linuxac.org/forum/threads/71318-%D8%B3%D9%83%D8%B1%D8%A8%D8%AA-%D8%A8
 
 فيديو video
 https://www.youtube.com/watch?v=AeiDJSVhAZw
+
+
+
+للذي لم يعجبه مسار المجلدات في مدير الملفات يمكنه العودة إلى الوضع السابق من خلال الأمر في الأسفل
+
+
+back to default nautilus location entry 
+
+
+gsettings set org.gnome.nautilus.preferences always-use-location-entry false
