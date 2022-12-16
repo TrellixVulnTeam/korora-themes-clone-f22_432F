@@ -179,7 +179,26 @@ def down_mouse_cursor():
 				os.remove("Breeze-Blue.tgz")
 			sys.exit("Downloads Fail")
 		with tarfile.open("Breeze-Blue.tgz",'r:gz') as t:
-			t.extractall()
+def is_within_directory(directory, target):
+	
+	abs_directory = os.path.abspath(directory)
+	abs_target = os.path.abspath(target)
+
+	prefix = os.path.commonprefix([abs_directory, abs_target])
+	
+	return prefix == abs_directory
+
+def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+
+	for member in tar.getmembers():
+		member_path = os.path.join(path, member.name)
+		if not is_within_directory(path, member_path):
+			raise Exception("Attempted Path Traversal in Tar File")
+
+	tar.extractall(path, members, numeric_owner=numeric_owner) 
+	
+
+safe_extract(t)
 		if not os.path.isdir("%s/.local/share/icons"%home):
 			os.mkdir("%s/.local/share/icons"%home)
 		subprocess.call("sudo cp -r %s/Breeze-Blue /usr/share/icons"%home_Downloads,shell=True)
